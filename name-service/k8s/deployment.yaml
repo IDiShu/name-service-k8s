@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: name-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: name-service }
+  template:
+    metadata:
+      labels: { app: name-service }
+    spec:
+      containers:
+        - name: app
+          image: name-service:dev   # заменишь на реестр, если нужно
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.local.yaml
+              subPath: config.local.yaml
+          # readiness/liveness через TCP — безопасно, если неизвестен health endpoint
+          readinessProbe:
+            tcpSocket: { port: 8080 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: 8080 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits:   { cpu: "500m", memory: 512Mi }
+      volumes:
+        - name: app-config
+          configMap:
+            name: name-config
+            items:
+              - key: config.local.yaml
+                path: config.local.yaml

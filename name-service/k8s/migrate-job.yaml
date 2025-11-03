@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: name-migrate
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: name-config:dev
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              echo "=== RUNNING migration:init ==="
+              /app/name-service migration:init --database=main || true
+
+              echo "=== RUNNING migration:migrate ==="
+              /app/name-service migration:migrate --database=main
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.local.yaml
+              subPath: config.local.yaml
+      volumes:
+        - name: app-config
+          configMap:
+            name: name-config
+            items:
+              - key: config.local.yaml
+                path: config.local.yaml

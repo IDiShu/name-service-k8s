@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: go-auth-config
+data:
+  config.local.yaml: |
+    http:
+      listen: 0.0.0.0:8080
+
+    cors:
+      default:
+        allowed_origins:
+          - "https://thought-team.online"
+        credentials: true
+      internal:
+        allowed_origins:
+          - "https://thought-team.online"
+        credentials: true
+
+    logger:
+      level: debug
+
+    database:
+      driver: postgres
+      dsn: "host=postgres port=5432 user=user password=password dbname=main sslmode=disable"
+
+    external:
+      google_oauth2:
+        client_id: ""
+        client_secret: ""
+
+    jwt:
+      access_token_expiry_ttl: "30m"
+      refresh_token_expiry_ttl: "72h"
+      secrets_map:
+        key-01: "dev-secret-01"
