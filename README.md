@@ -94,7 +94,7 @@ curl -i http://127.0.0.1:8081/status  # expect 200 OK, logs show level=info
 
 ## 🔐 Secrets and Configs
 
-* **Secrets (`stringData`)**: stored in plain text and automatically converted to base64 by Kubernetes — secure and readable for humans.
+* **Secrets (`stringData`)**: stored in plain text and automatically converted to base64 by Kubernetes — secure and readable.
 * **ConfigMap as Volume**: used for structured YAML/JSON configs that apps load as files.
 * **Env Vars**: best for small scalar values like credentials or flags.
 
@@ -139,5 +139,3 @@ containers:
 * Configurable through Kustomize overlays
 
 ---
-
-Would you like me to extend this README with **badges (CI/CD, Kubernetes version, Docker image)** and a **“Troubleshooting & Tips”** section (like your other repositories)?
